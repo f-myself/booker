@@ -1,0 +1,5 @@
+RewriteEngine On
+RewriteBase /~user6/booker/Server/
+# RewriteBase /server/
+RewriteRule .* index.php [L]
+DirectoryIndex index.php
