@@ -26,10 +26,10 @@ class AuthController extends core\Controller
         // $request = $this->getPostData();
     }
 
-    public function putAction()
+    public function putAction($input)
     {
         $request = $this->getPutData();
-        echo $request;
+        // print_r($request);
     }
 
     public function deleteAction($input)

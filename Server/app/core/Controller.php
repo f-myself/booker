@@ -32,6 +32,7 @@ class Controller
     {
         $result = array(); 
         $putdata = file_get_contents('php://input'); 
+        // print_r($putdata);
         $exploded = explode('&', $putdata);  
         
         foreach($exploded as $pair) 
