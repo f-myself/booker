@@ -18,17 +18,18 @@ class AuthController extends core\Controller
 
     public function getAction()
     {
-        
+        echo "Hello";
     }
 
     public function postAction($input)
     {
-        $request = $this->getPostData();
+        // $request = $this->getPostData();
     }
 
-    public function putAction($input)
+    public function putAction()
     {
-
+        $request = $this->getPutData();
+        echo $request;
     }
 
     public function deleteAction($input)

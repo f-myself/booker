@@ -12,7 +12,7 @@ class AuthModel extends core\Model
      *  Auth model
      *  get different operations with users
      *  Works with controllers: Auth
-     *  Operations: login, logout, sign up
+     *  Operations: login, logout
      *  Checkers: same username, same email
      * 
     **/

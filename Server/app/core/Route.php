@@ -18,8 +18,9 @@ class Route
         if (SERV_CROSS_DOMAIN)
         {
             header('Access-Control-Allow-Origin: *');
+            header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token');
+            header('Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS');
         }
-
         $this->url = $_SERVER['REQUEST_URI'];
         $this->method = $_SERVER['REQUEST_METHOD'];
     }
