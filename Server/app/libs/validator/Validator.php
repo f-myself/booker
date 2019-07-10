@@ -14,11 +14,11 @@ class Validator
     private $result;
     private $error;
 
-    public function checkRule($data, $length=128, $rule)
+    public function checkRule($data, $rule, $length=128)
     {
         if(method_exists($this, $rule))
         {
-            $this->result = $this -> $rule($data, $length);
+            $this->result = $this->$rule($data, $length);
         }
 
         if (!$this->result)
@@ -39,7 +39,7 @@ class Validator
         if (!trim($string) || !is_string($string))
         {
             $this->error = ERR_STRING_TYPE;
-            return false
+            return false;
         }
 
         if (!preg_match("/^[a-zA-Z]+$", $string))
@@ -59,9 +59,11 @@ class Validator
             return false;
         }
 
-        if (!$string || !is_string($string))
+        if (!$string or !is_string($string))
         {
-            $this->error = ERR_STRING_TYPE;
+            echo $string;
+            // $this->error = ERR_STRING_TYPE;
+            $this->error = $string;
             return false;
         }
         return true;
