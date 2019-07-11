@@ -48,6 +48,14 @@ class AuthController extends core\Controller
                 $result['errors'] = array($loginCheck, $passwordCheck);    
             }
             $this->view->putAuth($result, $input);
+        } elseif ($request['operation'] == "logout")
+        {
+            $idCheck = $this->validator->checkRule($request['id'], "isInteger");
+            
+            if (true === $idCheck)
+            {
+                $this->model->logout($request);
+            }
         }
     }
 

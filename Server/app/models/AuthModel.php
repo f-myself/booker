@@ -65,6 +65,12 @@ class AuthModel extends core\Model
         return ["status" => "empty_form"];
     }
 
+    public function logout($data)
+    {
+        $id = $data['id'];
+        $tokenInput = $this->sql->newQuery()->update('b_users', ['token'], ['NULL'], 'id=' . $id)->doQuery();
+    }
+
     private function generateToken($user="")
     {
         $token = md5($user . time(microtime()));
