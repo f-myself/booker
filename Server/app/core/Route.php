@@ -28,8 +28,8 @@ class Route
 
     public function start()
     {
-        // list($server, $user, $dir, $taskDir, $serverDir, $apiDir, $className, $input) = explode('/', $this->url, 8);
-        list($server, $dir, $serverDir, $apiDir, $className, $input) = explode('/', $this->url, 6);
+        list($server, $user, $dir, $taskDir, $serverDir, $apiDir, $className, $input) = explode('/', $this->url, 8);
+        // list($server, $dir, $serverDir, $apiDir, $className, $input) = explode('/', $this->url, 6);
 
         // echo $server . "\n";
         // echo $dir . "\n";
@@ -40,6 +40,7 @@ class Route
 
         $controllerName = 'app\controllers\\' . ucfirst($className) . 'Controller';
         $controller = new $controllerName(ucfirst($className));
+        echo $controllerName;
 
         if (!is_object($controller))
         {

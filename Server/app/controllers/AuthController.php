@@ -22,7 +22,7 @@ class AuthController extends core\Controller
 
     public function getAction()
     {
-        echo "Hello";
+        
     }
 
     public function postAction($input)
