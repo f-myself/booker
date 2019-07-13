@@ -22,18 +22,47 @@ class UsersModel extends core\Model
         $this->sql = new pdo\PDOHandler;
     }
 
-    function getAllUsers()
+    public function getAllUsers()
     {
-        return $this->sql->newQuery()->select('id, name, email')
+        $users = $this->sql->newQuery()->select('id, name, email')
                                      ->from('b_users')
                                      ->doQuery();
+        $result = array("data" => $users, "status" => "success");
+        return $result;
     }
 
-    function getUserById($id)
+    public function getUserById($id)
     {
-        return $this->sql->newQuery()->select('id, name, email')
+        $user = $this->sql->newQuery()->select('id, name, email')
                                      ->from('b_users')
                                      ->where('id=' . $id)
                                      ->doQuery();
+
+        $result = array("data" => $user);
+        if ($user[0])
+        {
+            $result['status'] = 'success';
+            return $result;
+        }
+
+        $result['status'] = 'no_user';
+        return $result;
     }
+
+    public function checkAdmin($id, $token)
+    {
+        $user = $this->sql->newQuery()->select('id, role_id, token')
+                                      ->from('b_users')
+                                      ->where('id=' . $id)
+                                      ->doQuery();
+        $user = $user[0];
+
+        if ($user['role_id'] != 1 or $token != $user['token'])
+        {
+            return ['status' => 'not_admin'];
+        }
+    
+        return ['status' => 'success'];
+    }
+    
 }

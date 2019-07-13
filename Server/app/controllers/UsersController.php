@@ -20,7 +20,18 @@ class UsersController extends core\Controller
     public function getAction($input)
     {
         $request = $this->parseGetData($input);
-        print_r($request);
+        $reqUserId = $request[0];
+
+        $checkReqId = $this->validator->checkRule($reqUserId, 'isInteger');
+        if(true === $checkReqId)
+        {
+            $result = $this->model->getUserById($reqUserId);
+        } else {
+            $result = [];
+            $result['status'] = "err_valid";
+            $result['errors'] = array($checkReqId);
+        }
+        $this->view->getUsers($result);
     }
 
     public function postAction()

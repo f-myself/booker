@@ -6,25 +6,25 @@ use app\core as core;
 
 class Users extends core\View
 {
-    public function getAuth($data="", $viewType="")
+    public function getUsers($data="", $viewType="")
     {
         $this->restResponse("200");
         $this->showResponse($data, $viewType);
     }
 
-    public function postAuth($data="", $viewType="")
+    public function postUsers($data="", $viewType="")
     {
         $this->restResponse("200");
         $this->showResponse($data, $viewType);
     }
 
-    public function putAuth($data="", $viewType="")
+    public function putUsers($data="", $viewType="")
     {
         $this->restResponse("200");
         $this->showResponse($data, $viewType);
     }
 
-    public function deleteAuth($data="", $viewType="")
+    public function deleteUsers($data="", $viewType="")
     {
         $this->restResponse("200");
         $this->showResponse($data, $viewType);
