@@ -11,7 +11,7 @@ class UsersModel extends core\Model
      *   
      *  Users model
      *  get different operations with users
-     *  Works with controllers: User
+     *  Works with controllers: Users, Admin
      *  Operations: login, logout
      *  Checkers: same username, same email
      * 
