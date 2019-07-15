@@ -56,7 +56,7 @@ class UsersModel extends core\Model
                                       ->where('id=' . $id)
                                       ->doQuery();
         $user = $user[0];
-
+        
         if ($user['role_id'] != 1 or $token != $user['token'])
         {
             return ['status' => 'not_admin'];

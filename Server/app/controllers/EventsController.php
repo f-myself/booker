@@ -24,7 +24,30 @@ class EventsController extends core\Controller
 
     public function postAction()
     {
-        
+        $request = $this->getPostData();
+
+        $userId = $request['userForId'];
+        $boardroomId = $request['boardroom'];
+        $description = $request['description'];
+        $dateStart = $request['dateStart']);
+        $dateEnd = $request['dateEnd']);
+        $dateCreated = $request['dateCreate']);
+        $recurring = $request['recurring'];
+        $duration = $request['duration'];
+
+        if (true === $this->validator->checkRule($userId), 'isInteger') and
+            true === $this->validator->checkRule($boardroomId), 'isInteger') and
+            true === $this->validator->checkRule($description), 'isStringText') and
+            true === $this->validator->checkRule($dateStart), 'isStringText') and
+            true === $this->validator->checkRule($dateEnd), 'isStringText') and
+            true === $this->validator->checkRule($dateCreated), 'isStringText') and
+            true === $this->validator->checkRule($recurring), 'isText') and
+            true === $this->validator->checkRule($duration), 'isInteger'))
+        {
+            $result = $this->model->createEvent($userId, $boardroomId, $description, $dateStart, $dateEnd, $dateCreated, $recurring, $duration)
+        }
+            
+
     }
 
     public function putAction()
