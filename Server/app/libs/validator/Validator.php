@@ -42,7 +42,7 @@ class Validator
             return false;
         }
 
-        if (!preg_match("/^[a-zA-Z]+$", $string))
+        if (!preg_match("/^[a-zA-Z]+$/", $string))
         {
             $this->error = ERR_STRING_CHARS;
             return false;

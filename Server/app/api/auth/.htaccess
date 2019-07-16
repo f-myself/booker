@@ -2,7 +2,7 @@
     Allow from all
 </Limit>
 RewriteEngine On
-RewriteBase /~user6/booker/Server/
-# RewriteBase /Server/
+# RewriteBase /~user6/booker/Server/
+RewriteBase /Server/
 RewriteRule .* index.php [L]
 DirectoryIndex index.php
