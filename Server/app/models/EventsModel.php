@@ -52,13 +52,14 @@ class EventsModel extends core\Model
                 return ['status' => "err_time"];
             }
             
-            if ($this->checkHolidays($dateStart))
-            {
-                $result = $this->sql->newQuery()->insert('b_bookings', ['user_id', 'boardroom_id', 'description', 'datetime_start', 'datetime_end', 'datetime_created'], "'$userId', '$boardroomId', '$description', '$start', '$end', '$created'")->doQuery();
-            } else {
-                return ['status' => 'err_holiday'];
-            }
-        }       
+        }
+
+        if ($this->checkHolidays($dateStart))
+        {
+            $result = $this->sql->newQuery()->insert('b_bookings', ['user_id', 'boardroom_id', 'description', 'datetime_start', 'datetime_end', 'datetime_created'], "'$userId', '$boardroomId', '$description', '$start', '$end', '$created'")->doQuery();
+        } else {
+            return ['status' => 'err_holiday'];
+        }
 
         if ($recurring)
         {
