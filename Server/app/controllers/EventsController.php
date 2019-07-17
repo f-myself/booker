@@ -17,9 +17,25 @@ class EventsController extends core\Controller
         $this->validator = new validator\Validator;
     }
 
-    public function getAction()
+    public function getAction($input)
     {
-        
+        $request = $this->parseGetData($input);
+
+        $roomId = $request[0];
+        $year = $request[1];
+        $month = $request[2];
+
+        $roomCheck = $this->validator->checkRule($userId, 'isInteger');
+        $yearCheck = $this->validator->checkRule($year, 'isInteger');
+        $monthCheck = $this->validator->checkRule($month, 'isInteger');
+
+        if ($roomCheck and $yearCheck and $monthCheck)
+        {
+            $result = $this->model->getAllEvents($roomId, $year, $month);
+            $this->view->postEvents($result);
+        } else {
+            return ['status' => 'err_valid'];
+        }
     }
 
     public function postAction()

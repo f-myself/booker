@@ -21,8 +21,21 @@ class EventsModel extends core\Model
         $this->sql = new pdo\PDOHandler;
     }
 
-    public function getAllEvents()
+    public function getAllEvents($room, $year, $month)
     {
+        $events = $this->sql->newQuery()->select(['id', 'user_id', 'boardroom_id', 'description', 'UNIX_TIMESTAMP(datetime_start) as startEvent', 'UNIX_TIMESTAMP(datetime_end) as endEvent', 'UNIX_TIMESTAMP(datetime_created) as createdEvent'])
+                                        ->from('b_bookings')
+                                        ->where("boardroom_id='$room'")
+                                        ->l_and("YEAR(datetime_start)='$year'")
+                                        ->l_and("MONTH(datetime_start)='$month'")
+                                        ->doQuery();
+        if ($events)
+        {
+            $result = ["data" => $events, "status" => "success"];
+            return $result;
+        } else {
+            return ["status" => "error"];
+        }
         
     }
 
@@ -147,7 +160,7 @@ class EventsModel extends core\Model
             // todo: for Editing event
         }
 
-        if (count($result) > 0)
+        if (count($result) > 0 and is_array($result))
         {
             foreach($result as $date)
             {
