@@ -20,9 +20,23 @@ class AuthController extends core\Controller
         
     }
 
-    public function getAction()
+    public function getAction($input)
     {
-        
+        $model = new \app\models\UsersModel;
+        $request = $this->parseGetData($input);
+
+        $id =  $request[0];
+        $token = $request[1];
+
+        $result = $model->checkAdmin($id, $token);
+
+        if ($result)
+        {
+            $this->view->getAuth($result);
+        } else {
+            return ['status' => 'err_admin'];
+        }
+                
     }
 
     public function postAction($input)
