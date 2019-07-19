@@ -41,14 +41,15 @@ class EventsModel extends core\Model
 
     public function getEventById($id)
     {
-        $event = $this->sql->newQuery()->select(['b.id', 'user_id', 'u.name', 'boardroom_id', 'description', 'UNIX_TIMESTAMP(datetime_start) as startEvent', 'UNIX_TIMESTAMP(datetime_end) as endEvent', 'UNIX_TIMESTAMP(datetime_created) as createdEvent', 'booking_id as parent'])
+        $events = $this->sql->newQuery()->select(['b.id', 'user_id', 'u.name', 'boardroom_id', 'description', 'UNIX_TIMESTAMP(datetime_start) as startEvent', 'UNIX_TIMESTAMP(datetime_end) as endEvent', 'UNIX_TIMESTAMP(datetime_created) as createdEvent', 'booking_id as parent'])
                                        ->from('b_bookings b')
                                        ->join('b_users u', 'b.user_id=u.id')
                                        ->where('b.id=' . $id)
+                                       ->l_or("b.booking_id=" . $id)
                                        ->doQuery();
-        if ($event)
+        if ($events)
         {
-            return ['data' => $event[0], 'status' => 'success'];
+            return ['data' => $events, 'status' => 'success'];
         }
         return ['status' => 'err_no_event'];
     }
@@ -116,7 +117,7 @@ class EventsModel extends core\Model
                 $repeatEndDate = date("Y-m-d G:i:s", $repeatEndTime);
                 if($this->checkTimeEvent($repeatStartTime, $repeatEndTime, $boardroomId))
                 {
-                    $this->sql->newQuery()->insert('b_bookings', ['user_id', 'boardroom_id', 'description', 'datetime_start', 'datetime_end', 'booking_id', 'datetime_created'], "'$userId', '$boardroomId', '$description', '$repeatStart', '$repeatEnd', '$lastEventId', '$created'")->doQuery();
+                    $this->sql->newQuery()->insert('b_bookings', ['user_id', 'boardroom_id', 'description', 'datetime_start', 'datetime_end', 'booking_id', 'datetime_created'], "'$userId', '$boardroomId', '$description', '$repeatStartDate', '$repeatEndDate', '$lastEventId', '$created'")->doQuery();
                 } else {
                     return ["status" => "succ_with_errors"];
                 }
