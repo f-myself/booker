@@ -108,7 +108,40 @@ class EventsController extends core\Controller
 
     public function putAction()
     {
+        $request = $this->getPutData();
         
+        $eventId     = trim(strip_tags($request['eventId']));
+        $dateStart   = trim(strip_tags($request['dateStart']));
+        $dateEnd     = trim(strip_tags($request['dateEnd']));
+        $description = trim(strip_tags($request['description']));
+        $recFlag     = $request['recFlag'];
+        $userId      = trim(strip_tags($request['userId']));
+        $token       = trim(strip_tags($request['token']));
+
+        if (true === $this->validator->checkRule($userId, 'isInteger') and
+            true === $this->validator->checkRule($token, 'isStringText'))
+        {
+            $userModel = new \app\models\UsersModel;
+            $checkUser = $userModel->checkUser($userId, $token);
+        } else {
+            return ['status' => 'err_valid'];
+        }
+
+        if(!$checkUser or $checkUser['status'] != 'success')
+        {
+            return $checkUser;
+        }
+
+        if(true === $this->validator->checkRule($eventId, 'isInteger') and
+           true === $this->validator->checkRule($dateStart, 'isInteger') and
+           true === $this->validator->checkRule($dateEnd, 'isInteger') and
+           true === $this->validator->checkRule($description, 'isStringText') and
+           is_bool($recFlag))
+        {
+            $result = $this->model->updateEvent($eventId, $dateStart, $dateEnd, $description, $recFlag);
+        }
+
+
     }
 
     public function deleteAction()

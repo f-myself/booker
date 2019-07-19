@@ -161,6 +161,12 @@ class EventsModel extends core\Model
 
         return ["status" => 'error'];
     }
+
+    public function updateEvent($eventId, $dateStart, $dateEnd, $description, $recFlag)
+    {
+        // Todo: updateEvent
+        return true;
+    }
     
     private function checkTimeEvent($timestampStart, $timestampEnd, $room, $id = false)
     {

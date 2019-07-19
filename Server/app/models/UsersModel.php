@@ -49,6 +49,21 @@ class UsersModel extends core\Model
         return $result;
     }
 
+    public function checkUser($id, $token)
+    {
+        $user = $this->sql->newQuery()->select('id, role_id, token')
+                                      ->from('b_users')
+                                      ->where('id=' . $id)
+                                      ->doQuery();
+        $user = $user[0];
+
+        if($token != $user['token'])
+        {
+            return ['status' => 'err_login'];
+        }
+        return ['status' => 'success'];
+    }
+
     public function checkAdmin($id, $token)
     {
         $user = $this->sql->newQuery()->select('id, role_id, token')
