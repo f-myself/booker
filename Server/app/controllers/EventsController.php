@@ -189,8 +189,43 @@ class EventsController extends core\Controller
 
     }
 
-    public function deleteAction()
+    public function deleteAction($input)
     {
+        $request = $this->getDeleteParams($input);
+
+        $eventId = trim(strip_tags($request[0]));
+        $option = trim(strip_tags($request[1]));
+        $userId = trim(strip_tags($request[2]));
+        $token = trim(strip_tags($request[3]));
         
+        if (true === $this->validator->checkRule($userId, 'isInteger') and
+            true === $this->validator->checkRule($token, 'isStringText') and
+            true === $this->validator->checkRule($eventId, 'isInteger'))
+        {
+            $userModel = new \app\models\UsersModel;
+            $checkUser = $userModel->checkUser($userId, $token);
+        } else {
+            return ['status' => 'err_valid'];
+        }
+        
+        if(!$checkUser or $checkUser['status'] != 'success')
+        {
+            return $this->view->putEvents($checkUser);
+        }
+
+        switch ($option)
+        {
+            case 'single':
+                $result = $this->model->deleteEventById($eventId);
+                break;
+
+            case 'all':
+                $result = $this->model->deleteEventById($eventId, true);
+                break;
+
+            default:
+                $result = ['status' => 'err_operation'];
+        }
+        $this->view->deleteEvents($result);
     }
 }

@@ -246,6 +246,25 @@ class EventsModel extends core\Model
             }
         return["status" => "error"];
     }
+
+    public function deleteEventById($eventId, $allEvents=false)
+    {
+        if ($allEvents)
+        {
+            $result = $this->sql->delete("b_bookings", "id='$eventId'")
+                                ->l_or("booking_id='$eventId'")
+                                ->doQuery();
+        } else {
+            $result = $this->sql->delete("b_bookings", "id='$eventId'")
+                                ->doQuery();
+        }
+
+        if ($result)
+        {
+            return ["status" => "success"];
+        }
+        return ["status" => "error"];
+    }
     
     private function checkTimeEvent($timestampStart, $timestampEnd, $room, $id = false)
     {
