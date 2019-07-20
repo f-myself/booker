@@ -111,12 +111,51 @@ class EventsController extends core\Controller
         $request = $this->getPutData();
         
         $eventId     = trim(strip_tags($request['eventId']));
+        $roomId      = trim(strip_tags($request['roomId']));
+        $parent      = trim(strip_tags($request['parent']));
+        $userFor     = trim(strip_tags($request['userFor']));
         $dateStart   = trim(strip_tags($request['dateStart']));
         $dateEnd     = trim(strip_tags($request['dateEnd']));
         $description = trim(strip_tags($request['description']));
-        $recFlag     = $request['recFlag'];
+        if ($request['recFlag'] == 'true')
+        {
+            $recFlag = true;
+        } else {
+            $recFlag = false;
+        }
         $userId      = trim(strip_tags($request['userId']));
         $token       = trim(strip_tags($request['token']));
+
+        if((int)$dateStart < time())
+        {
+            return ["status" => "err_current"];
+        }
+
+        if ((int)$dateStart > (int)$dateEnd)
+        {
+            return ["status" => "err_dates"];
+        }
+
+        $startTime = date("G", $dateStart);
+        $endTime = date("G", $dateEnd);
+
+        if ((int)$startTime < 8 or (int)$startTime > 20 or
+            (int)$endTime < 8 or (int)$endTime > 20)
+        {
+            return ["status" => "err_hours"];
+        }
+
+        $startYear = date("Y", $dateStart);
+
+        if ($startYear > 2020)
+        {
+            return ["status" => "err_future"];
+        }
+
+        if ($startYear < 2019)
+        {
+            return ["status" => "err_past"];
+        }
 
         if (true === $this->validator->checkRule($userId, 'isInteger') and
             true === $this->validator->checkRule($token, 'isStringText'))
@@ -126,21 +165,27 @@ class EventsController extends core\Controller
         } else {
             return ['status' => 'err_valid'];
         }
-
+        
         if(!$checkUser or $checkUser['status'] != 'success')
         {
-            return $checkUser;
+            return $this->view->putEvents($checkUser);
         }
-
+        
         if(true === $this->validator->checkRule($eventId, 'isInteger') and
+           true === $this->validator->checkRule($roomId, 'isInteger') and
+           true === $this->validator->checkRule($userFor, 'isInteger') and
            true === $this->validator->checkRule($dateStart, 'isInteger') and
            true === $this->validator->checkRule($dateEnd, 'isInteger') and
-           true === $this->validator->checkRule($description, 'isStringText') and
-           is_bool($recFlag))
+           true === $this->validator->checkRule($description, 'isStringText')
+           )
         {
-            $result = $this->model->updateEvent($eventId, $dateStart, $dateEnd, $description, $recFlag);
+            $result = $this->model->updateEvent($eventId, $roomId, $parent, $userFor, $dateStart, $dateEnd, $description, $recFlag);
+            $this->view->putEvents($result);
+        } else {
+            return ['status' => 'err_valid'];
         }
 
+        return ['status' => 'error'];
 
     }
 

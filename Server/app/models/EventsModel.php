@@ -60,13 +60,9 @@ class EventsModel extends core\Model
         $end = date("Y-m-d G:i:s", $dateEnd);
         $created = date("Y-m-d G:i:s", $dateCreated);
 
-        if (!$recurring)
+        if(!$this->checkTimeEvent($dateStart, $dateEnd, $boardroomId))
         {
-            if(!$this->checkTimeEvent($dateStart, $dateEnd, $boardroomId))
-            {
-                return ['status' => "err_time"];
-            }
-            
+            return ["status" => "err_time"];
         }
 
         if ($this->checkHolidays($dateStart))
@@ -148,7 +144,8 @@ class EventsModel extends core\Model
             /***********************/
             if($this->checkTimeEvent($repeatStartTime, $repeatEndTime, $boardroomId))
             {
-                $this->sql->newQuery()->insert('b_bookings', ['user_id', 'boardroom_id', 'description', 'datetime_start', 'datetime_end', 'booking_id', 'datetime_created'], "'$userId', '$boardroomId', '$description' '$repeatStartDate', '$repeatEndDate', '$lastEventId', '$created'")->doQuery();
+                $this->sql->newQuery()->insert('b_bookings', ['user_id', 'boardroom_id', 'description', 'datetime_start', 'datetime_end', 'booking_id', 'datetime_created'], "'$userId', '$boardroomId', '$description', '$repeatStartDate', '$repeatEndDate', '$lastEventId', '$created'")->doQuery();
+                // echo $this->sql->getQuery();
             } else {
                 return ["status" => "succ_with_errors"];
             }
@@ -162,10 +159,92 @@ class EventsModel extends core\Model
         return ["status" => 'error'];
     }
 
-    public function updateEvent($eventId, $dateStart, $dateEnd, $description, $recFlag)
+    public function updateEvent($eventId, $boardroomId, $parent, $userFor, $dateStart, $dateEnd, $description, $recFlag)
     {
         // Todo: updateEvent
-        return true;
+
+        // echo "event: $eventId \n";
+        // echo "room: $boardroomId \n";
+        // echo "parent: $parent \n";
+        // echo "user: $userFor \n";
+        // echo "start: $dateStart \n";
+        // echo "dateEnd: $dateEnd \n";
+        // echo "description: $description \n";
+        // echo "recFlag: $recFlag \n";
+        $start = date("Y-m-d G:i:s", $dateStart);
+        $end = date("Y-m-d G:i:s", $dateEnd);
+
+        if ($recFlag == false)
+        {
+            if(!$this->checkTimeEvent($dateStart, $dateEnd, $boardroomId, $eventId))
+            {
+                return ["status" => "err_time"];
+            }
+
+            $result = $this->sql->newQuery()->update("b_bookings", ["user_id", "description", "datetime_start", "datetime_end"], ["'$userFor'", "'$description'", "'$start'", "'$end'"], "id='$eventId'")->doQuery();
+
+            if ($result)
+            {
+                return ["status" => "success"];
+            }
+
+        } else {
+                // echo "multiple";
+                // return ['status' => 'disbled'];
+                $startTime = date("G:i:s", $dateStart);
+                $endTime = date("G:i:s", $dateEnd);
+
+                if($parent != 'null')
+                {
+                    $events = $this->sql->newQuery()->select(["id", "datetime_start", "datetime_end"])
+                                                    ->from("b_bookings")
+                                                    ->where("id=" . $parent)
+                                                    ->l_or("booking_id=" . $parent)
+                                                    ->doQuery();
+                } else {
+                    $events = $this->sql->newQuery()->select(["id", "datetime_start", "datetime_end"])
+                                                    ->from("b_bookings")
+                                                    ->where("id=" . $eventId)
+                                                    ->l_or("booking_id=" . $eventId)
+                                                    ->doQuery();
+                }
+
+                $newDates = [];
+
+                foreach($events as $key => $event)
+                {
+                    $newDates[$key]['id'] = $event['id'];
+
+                    $startDate = explode(" ", $event["datetime_start"]);
+                    $newDates[$key]['start'] = $startDate[0] . " " . $startTime;
+
+                    $endDate = explode(" ", $event["datetime_end"]);
+                    $newDates[$key]["end"] = $endDate[0] . " " . $endTime;
+                }
+
+                foreach($newDates as $newEvent)
+                {
+                    if (!$this->checkTimeEvent(strtotime($newEvent["start"]), strtotime($newEvent["end"]), $boardroomId, $newEvent["id"]))
+                    {
+                        return ["status" => "err_time"];
+                    }
+                }
+
+                foreach($newDates as $newEvent)
+                {
+                    $updateStart = $newEvent['start'];
+                    $updateEnd = $newEvent['end'];
+                    $id = $newEvent['id'];
+                    $result = $this->sql->newQuery()->update("b_bookings", ["user_id", "description", "datetime_start", "datetime_end"], ["'$userFor'", "'$description'", "'$updateStart'", "'$updateEnd'"], "id='$id'")->doQuery();
+
+                    if(!$result)
+                    {
+                        return ["status" => "succ_with_errors"];
+                    }
+                }
+                return ["status" => "success"];
+            }
+        return["status" => "error"];
     }
     
     private function checkTimeEvent($timestampStart, $timestampEnd, $room, $id = false)
@@ -180,7 +259,12 @@ class EventsModel extends core\Model
                                             ->l_and("boardroom_id='$room'")
                                             ->doQuery();
         } else {
-            // todo: for Editing event
+            $result = $this->sql->newQuery()->select(["id", "UNIX_TIMESTAMP(datetime_start) as start", "UNIX_TIMESTAMP(datetime_end) as end"])
+                                            ->from("b_bookings")
+                                            ->where("DATE(datetime_start)='$day'")
+                                            ->l_and("boardroom_id='$room'")
+                                            ->l_and("id !='$id'")
+                                            ->doQuery();
         }
 
         if (count($result) > 0 and is_array($result))
