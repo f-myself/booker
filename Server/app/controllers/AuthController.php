@@ -41,7 +41,7 @@ class AuthController extends core\Controller
 
     public function postAction($input)
     {
-        // $request = $this->getPostData();
+        
     }
 
     public function putAction()

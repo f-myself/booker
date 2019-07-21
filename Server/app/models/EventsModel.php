@@ -265,6 +265,32 @@ class EventsModel extends core\Model
         }
         return ["status" => "error"];
     }
+
+    public function deleteEventByUser($userId)
+    {
+        $result = $this->sql->delete("b_bookings", "user_id='$userId'")
+                            ->doQuery();
+
+        if ($result)
+        {
+            return ["status" => "success"];
+        }
+        return ["status" => "error"];
+    }
+
+    public function getRooms()
+    {
+        $rooms = $this->sql->select(['id', 'name'])
+                         ->from('b_boardrooms')
+                         ->doQuery();
+
+        if ($rooms)
+        {
+            $result = ["status" => "success", "data" => $rooms];
+            return $result;
+        }
+        return ["status" => "error"];
+    }
     
     private function checkTimeEvent($timestampStart, $timestampEnd, $room, $id = false)
     {
