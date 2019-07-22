@@ -1,15 +1,15 @@
 <?php
-
+/**
+ *   
+ *  Routing class
+ *  Parse url, choose class and method, start the server
+ * 
+**/
 namespace app\core;
 
 class Route
 {
-    /**
-     *   
-     *  Routing class
-     *  Parse url, choose class and method, start the server
-     * 
-    **/
+    
     private $service;
     private $url;
 

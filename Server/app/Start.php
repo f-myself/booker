@@ -1,5 +1,11 @@
 <?php
 
+/**
+ *
+ * File, which starts router and other core classes
+ * 
+ */
+
 namespace app;
 use app\core as core;
 

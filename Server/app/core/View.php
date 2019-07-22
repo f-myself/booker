@@ -1,16 +1,26 @@
 <?php
-
+ /**
+ *   
+ *  Core file of View
+ *  Take data and type of view info and show it. View types: xml, txt, json, html (as simple list)
+ * 
+**/
 namespace app\core;
 
 class View
 {
+   
     /**
-     *   
-     *  Core file of View
-     *  Take data and type of view info and show it. View types: xml, txt, json, html (as simple list)
+     *
+     * @param array
+     * @param string
+     * @return string
      * 
-    **/
-
+     * Formats response in fromat from query string
+     * or default value from config
+     * and call appropriate method to show response
+     * 
+     */
     public function showResponse($data, $viewType=VIEW_JSON)
     {
         switch (strtolower($viewType))
@@ -118,6 +128,15 @@ class View
         print_r($result);
     }
 
+    /**
+     *
+     * @param string
+     * @return header or boolean
+     * 
+     * get status code 
+     * and returning appropriate header
+     * 
+     */
     public function restResponse($status)
     {
         switch ($status)

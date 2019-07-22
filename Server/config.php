@@ -1,5 +1,6 @@
 <?php
 
+/* Settings of PDO driver and Database Host */
 define('DB_DRV_MYSQL',          'mysql');
 define('DB_DRV_PGSQL',          'pgsql');
 define('DB_HOST',               'localhost');
